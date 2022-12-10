@@ -1,0 +1,83 @@
+CREATE TABLE atendente
+(
+  pk_cpfAtendente integer (11) NOT NULL,
+  nomeAtendente character (100) NOT NULL,
+  telefoneAtendente integer (9) NOT NULL,
+  dddAtendente integer (2) NOT NULL,
+  ufAtendente character (2) NOT NULL,
+  numAtendente integer (5) NOT NULL,
+  ruaAtendente character (100) NOT NULL,
+  cidadeAtendente character (100) NOT NULL,
+  bairroAtendente character (100) NOT NULL,
+  PRIMARY KEY (pk_codAtendente)
+)
+
+CREATE TABLE plano
+(
+  pk_codPlano integer (5),
+  nomePlano character (100) NOT NULL,
+  participacaoPlano real (9) NOT NULL,
+  PRIMARY KEY (pk_codPlano)
+)
+
+CREATE TABLE medico
+(
+  pk_codMedico integer (11) NOT NULL,
+  nomeMedico character (100) NOT NULL,
+  telefoneMedico integer (9) NOT NULL,
+  dddMedico integer (2) NOT NULL,
+  ufMedico character (2) NOT NULL,
+  numMedico integer (5) NOT NULL,
+  ruaMedico character (100) NOT NULL,
+  cidadeMedico character (100) NOT NULL,
+  bairroMedico character (100) NOT NULL,
+  PRIMARY KEY (pk_codMedico)
+)
+
+CREATE TABLE medico_plano
+(
+  pkfk_codMedico integer (5),
+  pkfk_codPlano character (5),
+  CONSTRAINT pk_composta PRIMARY KEY (pkfk_codMedico, pkfk_codPlano),
+  CONSTRAINT pkfk_codMedico FOREIGN KEY (pkfk_codMedico) REFERENCES medico (pk_codMedico),
+  CONSTRAINT pkfk_codPlano FOREIGN KEY (pkfk_codPlano) REFERENCES plano (pk_codPlano)
+)
+
+CREATE TABLE paciente
+(
+  pk_cpfPaciente integer (11) NOT NULL,
+  nomePaciente character (100) NOT NULL,
+  dataNascPaciente data NOT NULL,
+  telefonePaciente integer (9) NOT NULL,
+  dddPaciente integer (2) NOT NULL,
+  ufPaciente character (2) NOT NULL,
+  numPaciente integer (5) NOT NULL,
+  ruaPaciente character (100) NOT NULL,
+  cidadePaciente character (100) NOT NULL,
+  bairroPaciente character (100) NOT NULL,
+  PRIMARY KEY (pk_cpfPaciente),
+  CONSTRAINT fk_codPlano FOREIGN KEY (fk_codPlano) REFERENCES plano (pk_codPlano)
+)
+
+CREATE TABLE agendamento
+(
+  pkfk_cpfAtendente integer (11) NOT NULL,
+  dataConsulta data NOT NULL,
+  codMedico integer (5) NOT NULL,
+  pkfk_cpfAtendente integer (11) NOT NULL,
+  codConsulta serial NOT NULL UNIQUE,
+  dataAgendamento data NOT NULL,
+  CONSTRAINT pk_composta PRIMARY KEY (pkfk_cpfPaciente, pkfk_codAtendente),
+  CONSTRAINT pkfk_cpfPaciente FOREIGN KEY (pkfk_cpfPaciente) REFERENCES paciente (pk_cpfPaciente),
+  CONSTRAINT pkfk_cpfAtendente FOREIGN KEY (pkfk_cpfAtendente) REFERENCES atendente (pk_cpfAtendente)
+)
+
+CREATE TABLE consulta
+(
+  pk_codConsulta serial,
+  pkfk_codMedico integer (5),
+  pkfk_cpfPaciente integer (11),
+  CONSTRAINT pk_ternaria PRIMARY KEY (pk_codConsulta, pkfk_codMedico, pkfk_cpfPaciente),
+  CONSTRAINT pkfk_codMedico FOREIGN KEY (pkfk_codMedico) REFERENCES medico (pk_codMedico),
+  CONSTRAINT pkfk_cpfPaciente FOREIGN KEY (pkfk_cpfPaciente) REFERENCES paciente (pk_cpfPaciente)
+)
